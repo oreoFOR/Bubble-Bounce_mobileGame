@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
 using UnityEngine;
 
 public class BubbleBlower : MonoBehaviour
@@ -7,6 +7,7 @@ public class BubbleBlower : MonoBehaviour
     public GameObject bubble;
     //transform
     Transform currentBubble;
+    public Transform blower;
     //ints
     int bubbleNum;
     int staticBubbleNum;
@@ -14,7 +15,7 @@ public class BubbleBlower : MonoBehaviour
     int size;
     //customs
     public GameManager gameManager;
-    public BubbleLoader loader;
+    //public BubbleLoader loader;
     public Camera cam;
     public PhysicsMaterial2D[] bubbleMats;
     public LayerMask bubbleMask;
@@ -29,36 +30,27 @@ public class BubbleBlower : MonoBehaviour
     public float largeThreshold;
     public  void SetBubbleNum()
     {
-        List<bool> spawn = loader.layout.spawn;
-        for (int i = 0; i < spawn.Count; i++)
-        {
-            if (spawn[i] == true)
-            {
-                staticBubbleNum += 1;
-            }
-        }
-        bubbleNum = staticBubbleNum;
+        bubbleNum -= 1;
     }
     private void Update()
     {
         #region find/create bubble
         if (Input.GetMouseButtonDown(0))
         {
-            print("mouse down");
             Ray ray = cam.ScreenPointToRay(Input.mousePosition);
             RaycastHit2D hit = Physics2D.Raycast(ray.origin,ray.direction, Mathf.Infinity, bubbleMask);
             if (hit)
             {
-                print("hit");
+                SpawnBlower();
                 currentBubble = hit.transform;
                 followFinger = true;
             }
             else if (bubbleNum < maxBubbleNum)
             {
-                print("not hit");
                 followFinger = true;
                 Vector2 mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
                 currentBubble = Instantiate(bubble, mousePos, Quaternion.identity).transform;
+                SpawnBlower();
                 bubbleNum += 1;
                 staticBubbleNum += 1;
                 currentBubble.GetComponent<Bubble>().bubbleId = staticBubbleNum;
@@ -74,10 +66,10 @@ public class BubbleBlower : MonoBehaviour
         else if (Input.GetMouseButtonUp(0))
         {
             size = 0;
-            if(currentBubble != null)
+            EndBlower();
+            if (currentBubble != null)
             {
                 followFinger = false;
-                loader.AddBubble(currentBubble.position, currentBubble.localScale);
             }
         }
         #endregion
@@ -88,6 +80,7 @@ public class BubbleBlower : MonoBehaviour
             {
                 Vector2 mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
                 currentBubble.position = mousePos;
+                blower.position = mousePos;
                 currentBubble.localScale = Vector3.Lerp(currentBubble.localScale, maxBubbleSize, growSpeed * Time.deltaTime);
                 if (currentBubble.localScale.x > popSize)
                 {
@@ -95,7 +88,7 @@ public class BubbleBlower : MonoBehaviour
                     Destroy(currentBubble.gameObject);
                     bubbleNum -= 1;
                     gameManager.bubblesBlown = bubbleNum;
-                    loader.RemoveBubble(currentBubble.GetComponent<Bubble>().bubbleId);
+                    EndBlower();
                 }
             }
         }
@@ -115,5 +108,23 @@ public class BubbleBlower : MonoBehaviour
             }
         }
         #endregion
+    }
+    void SpawnBlower()
+    {
+        blower.gameObject.SetActive(true);
+    }
+    void EndBlower()
+    {
+        if(blower != null)
+        {
+            blower.GetComponent<Animator>().SetTrigger("fade");
+            print("have set trigger");
+            StartCoroutine(DestroyBlower());
+        }
+    }
+    IEnumerator DestroyBlower()
+    {
+        yield return new WaitForSeconds(0.5f);
+        blower.gameObject.SetActive(false);
     }
 }

@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3789287122401984926
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3789287122401984896}
+  - component: {fileID: 3789287122401984927}
+  m_Layer: 0
+  m_Name: BubbleBlower
+  m_TagString: Bubble
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3789287122401984896
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3789287122401984926}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.35060456, y: -0.38719228, z: -5.609074}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3789287122401984927
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3789287122401984926}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 278e799e9a90de841b91af5eca60167a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bubble: {fileID: 8165547661613354878, guid: 949204f492f8f9c40b149c1c1bedc45a, type: 3}
+  blowerPrefab: {fileID: 0}
+  maxBubbleNum: 10
+  gameManager: {fileID: 0}
+  cam: {fileID: 0}
+  bubbleMats:
+  - {fileID: 6200000, guid: 92b0b496e0b905c4786b8dfc98965bcd, type: 2}
+  - {fileID: 6200000, guid: e3bd097936e85674990f6eba9d2b29d8, type: 2}
+  bubbleMask:
+    serializedVersion: 2
+    m_Bits: 512
+  maxBubbleSize: {x: 0.55, y: 0.55, z: 0}
+  popSize: 0.45
+  growSpeed: 0.5
+  mediumThreshold: 0.26
+  largeThreshold: 0.37

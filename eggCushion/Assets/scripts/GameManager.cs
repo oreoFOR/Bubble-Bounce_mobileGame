@@ -10,14 +10,18 @@ public class GameManager : MonoBehaviour
     public Animator clawAnim;
     public BubbleBlower blower;
     public Camera cam;
+    public Claw claw;
+    Egg _egg;
+    public Bouncer[] physicsObjs;
     //objs
     public GameObject confettiPrefab;
     public GameObject[] goldenEggs;
     public GameObject GameOverPanel;
     public GameObject eggPrefab;
+    public GameObject nxtLvl;
     GameObject egg;
     //transforms
-    public Transform eggSpawnPos;
+    public Transform clawTarget;
     //int
     public int bubblesBlown;
     private void Start()
@@ -26,28 +30,43 @@ public class GameManager : MonoBehaviour
     }
     void StartGame()
     {
-        GetComponent<BubbleLoader>().LoadBubbles();
-        blower.SetBubbleNum();
-        egg = Instantiate(eggPrefab, eggSpawnPos.position, Quaternion.identity);
-        Egg _egg = egg.GetComponent<Egg>();
+        //GetComponent<BubbleLoader>().LoadBubbles();
+        //blower.SetBubbleNum();
+        egg = Instantiate(eggPrefab, clawTarget.position, Quaternion.identity);
+        egg.transform.SetParent(clawTarget);
+        _egg = egg.GetComponent<Egg>();
         _egg.gameManager = this;
         _egg.cam = cam;
+        _egg.blower = blower;
     }
     public void StartPhysics()
     {
+        egg.transform.SetParent(null);
         eggRb = egg.GetComponent<Rigidbody2D>();
         eggRb.bodyType = RigidbodyType2D.Dynamic;
         eggRb.gravityScale = 0.2f;
+        claw.clawMode = Claw.ClawMode.leave;
         clawAnim.SetTrigger("release");
+        _egg.StartTrail();
+        if(physicsObjs!= null)
+        {
+            for (int i = 0; i < physicsObjs.Length; i++)
+            {
+                physicsObjs[i].StartPhysics();
+            }
+        }
     }
     public void GameEnd(bool isCracked, bool failed)
     {
-        StartCoroutine(ActivateGamePanel());
+        GameOverPanel.SetActive(true);
         if (!failed) 
         {
+            nxtLvl.SetActive(true);
             Instantiate(confettiPrefab, transform.position, Quaternion.identity);
             goldenEggs[0].SetActive(true);
-            if (bubblesBlown <= 3)
+            int lvlNum = PlayerPrefs.GetInt("StaticLevelNum");
+            PlayerPrefs.SetInt("StaticLevelNum", lvlNum + 1);
+            if (bubblesBlown <= 6)
             {
                 goldenEggs[1].SetActive(true);
             }
@@ -57,24 +76,18 @@ public class GameManager : MonoBehaviour
             }
         }
     }
-    IEnumerator ActivateGamePanel()
-    {
-        yield return new WaitForSeconds(1.5f);
-        GameOverPanel.SetActive(true);
-    }
-    IEnumerator DeactivateGamePanel()
-    {
-        yield return new WaitForSeconds(0);
-        SceneManager.LoadScene(0);
-    }
     public void Replay()
     {
-        PlayerPrefs.SetInt("replay", 1);
-        GetComponent<BubbleLoader>().SaveBubbles();
-        StartCoroutine(DeactivateGamePanel());
+        Scene scene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(scene.buildIndex);
     }
     public void NextLvl()
     {
-        PlayerPrefs.SetInt("replay", 0);
+        Scene scene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(scene.buildIndex + 1);
+    }
+    public void Home()
+    {
+        SceneManager.LoadScene(0);
     }
 }

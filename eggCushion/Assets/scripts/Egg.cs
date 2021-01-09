@@ -10,6 +10,8 @@ public class Egg : MonoBehaviour
     public PhysicsMaterial2D eggMat;
     public LayerMask clawMask;
     public Camera cam;
+    public BubbleBlower blower;
+    public EggTrail trail;
     public enum EggGoal
     {
         saucepan,
@@ -37,10 +39,14 @@ public class Egg : MonoBehaviour
     bool onSurface;
     bool hasStopped;
     bool movingFast;
-    bool gameOver;
+    public bool gameOver;
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+    }
+    public void StartTrail()
+    {
+        trail.enabled = true;
     }
     #region collision
     private void OnCollisionEnter2D(Collision2D collision)
@@ -48,7 +54,15 @@ public class Egg : MonoBehaviour
         if (!gameOver)
         {
             onSurface = true;
-            if (!collision.gameObject.CompareTag("Bubble"))
+            if (collision.gameObject.CompareTag("Border"))
+            {
+                print("hit border");
+                ContactPoint2D contact = collision.contacts[0];
+                Quaternion rotation = Quaternion.FromToRotation(Vector3.up, contact.normal);
+                Vector3 position = contact.point;
+                EggBreak(position, rotation);
+            }
+            else if (!collision.gameObject.CompareTag("Bubble"))
             {
                 if (collision.relativeVelocity.magnitude > breakVel)
                 {
@@ -73,8 +87,11 @@ public class Egg : MonoBehaviour
                     }
                 }
             }
+            
             else
             {
+                trail.SpawnDot(1);
+                blower.SetBubbleNum();
                 Destroy(collision.gameObject);
             }
         }
@@ -88,6 +105,7 @@ public class Egg : MonoBehaviour
         if (collision.CompareTag("Saucepan"))
         {
             rb.drag = 5;
+            gameOver = true;
             gameManager.GameEnd(isCracked, false);
             Instantiate(waterSplash, transform.position, Quaternion.identity);
         }
@@ -144,7 +162,7 @@ public class Egg : MonoBehaviour
     #endregion
     IEnumerator Stationary()
     {
-        yield return new WaitForSeconds(0.75f);
+        yield return new WaitForSeconds(1.5f);
         if (rb.velocity.magnitude < 0.1f && onSurface)
         {
             hasStopped = true;

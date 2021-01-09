@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Bubble
   - Saucepan
+  - Border
   layers:
   - Default
   - TransparentFX
