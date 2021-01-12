@@ -24,7 +24,7 @@ public class Bouncer : MonoBehaviour
         if (collision.gameObject.CompareTag("Bubble"))
         {
             Destroy(collision.gameObject);
-            blower.SetBubbleNum();
+            blower.SetBubbleNum(false);
         }
     }
     public void StartPhysics()

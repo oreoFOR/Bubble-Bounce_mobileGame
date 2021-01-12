@@ -28,9 +28,10 @@ public class BubbleBlower : MonoBehaviour
     public float growSpeed;
     public float mediumThreshold;
     public float largeThreshold;
-    public  void SetBubbleNum()
+    public  void SetBubbleNum(bool staticBubble)
     {
         bubbleNum -= 1;
+        staticBubbleNum -= 1;
     }
     private void Update()
     {
@@ -54,7 +55,7 @@ public class BubbleBlower : MonoBehaviour
                 bubbleNum += 1;
                 staticBubbleNum += 1;
                 currentBubble.GetComponent<Bubble>().bubbleId = staticBubbleNum;
-                gameManager.bubblesBlown = bubbleNum;
+                gameManager.bubblesBlown = staticBubbleNum;
             }
             else
             {
@@ -70,6 +71,11 @@ public class BubbleBlower : MonoBehaviour
             if (currentBubble != null)
             {
                 followFinger = false;
+                if(currentBubble.localScale.x < 0.08f)
+                {
+                    Destroy(currentBubble.gameObject);
+                    SetBubbleNum(true);
+                }
             }
         }
         #endregion
@@ -86,7 +92,7 @@ public class BubbleBlower : MonoBehaviour
                 {
                     followFinger = false;
                     Destroy(currentBubble.gameObject);
-                    bubbleNum -= 1;
+                    SetBubbleNum(true);
                     gameManager.bubblesBlown = bubbleNum;
                     EndBlower();
                 }

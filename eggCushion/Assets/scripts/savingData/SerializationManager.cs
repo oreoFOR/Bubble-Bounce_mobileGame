@@ -5,7 +5,7 @@ using UnityEngine;
 
 public static class SerializationManager
 {
-    public static void Save(string saveName, BubbleLayout layout)
+    public static void Save(string saveName, PlayerProfile layout)
     {
         BinaryFormatter formatter = GetBinaryFormatter();
         if (!Directory.Exists(Application.persistentDataPath + "/saves"))
@@ -21,6 +21,7 @@ public static class SerializationManager
     public static SaveData Load(string _path)
     {
         string path = Application.persistentDataPath + "/saves/" + _path;
+        Debug.Log(path);
         if (!File.Exists(path))
         {
             Debug.Log("null");

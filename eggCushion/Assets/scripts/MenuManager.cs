@@ -7,13 +7,17 @@ public class MenuManager : MonoBehaviour
 {
     private void Start()
     {
-        PlayerPrefs.SetInt("StaticLevelNum", 1);
         if (PlayerPrefs.GetInt("StaticLevelNum") == 0)
         {
+            PlayerPrefs.SetInt("StaticLevelNum", 2);
         }
     }
     public void StartGame()
     {
         SceneManager.LoadScene(PlayerPrefs.GetInt("StaticLevelNum"));
+    }
+    public void LvlSlct()
+    {
+        SceneManager.LoadScene(1);
     }
 }

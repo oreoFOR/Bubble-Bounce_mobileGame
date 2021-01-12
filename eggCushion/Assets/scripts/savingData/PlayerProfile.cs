@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Cannon : MonoBehaviour
+public class PlayerProfile : MonoBehaviour
 {
-    public Bouncer bouncer;
-    
+    public int[] starNum = new int[10];
 }

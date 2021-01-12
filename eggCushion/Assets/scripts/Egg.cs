@@ -91,7 +91,7 @@ public class Egg : MonoBehaviour
             else
             {
                 trail.SpawnDot(1);
-                blower.SetBubbleNum();
+                blower.SetBubbleNum(false);
                 Destroy(collision.gameObject);
             }
         }

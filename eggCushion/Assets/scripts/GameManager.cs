@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
     public Claw claw;
     Egg _egg;
     public Bouncer[] physicsObjs;
+    PlayerProfile profile;
     //objs
     public GameObject confettiPrefab;
     public GameObject[] goldenEggs;
@@ -24,9 +25,21 @@ public class GameManager : MonoBehaviour
     public Transform clawTarget;
     //int
     public int bubblesBlown;
+    int starNum;
+    int buildIndex;
     private void Start()
     {
+        //ResetPP();
+        Scene scene = SceneManager.GetActiveScene();
+        buildIndex = scene.buildIndex;
+        profile = GetComponent<PlayerProfile>();
         StartGame();
+    }
+    void ResetPP()
+    {
+        PlayerPrefs.SetInt("StaticLevelNum", 0);
+        //PlayerProfile p = new PlayerProfile();
+       //SerializationManager.Save("playerProfile", p);
     }
     void StartGame()
     {
@@ -65,26 +78,51 @@ public class GameManager : MonoBehaviour
             Instantiate(confettiPrefab, transform.position, Quaternion.identity);
             goldenEggs[0].SetActive(true);
             int lvlNum = PlayerPrefs.GetInt("StaticLevelNum");
-            PlayerPrefs.SetInt("StaticLevelNum", lvlNum + 1);
-            if (bubblesBlown <= 6)
+            if (buildIndex > lvlNum)
+            {
+                lvlNum += 1;
+                PlayerPrefs.SetInt("StaticLevelNum", lvlNum);
+            }
+            starNum += 1;
+            if (bubblesBlown <= 5)
             {
                 goldenEggs[1].SetActive(true);
+                starNum += 1;
             }
             if (!isCracked)
             {
                 goldenEggs[2].SetActive(true);
+                starNum += 1;
             }
+        }
+        SaveManage(starNum);
+
+    }
+    void SaveManage(int _starNum)
+    {
+        SaveData data = SerializationManager.Load("playerProfile");
+        if(data != null)
+        {
+            profile.starNum = data.starNum;
+            if (_starNum > data.starNum[buildIndex -2])
+            {
+                profile.starNum[buildIndex - 2] = _starNum;// -1 coz there is lvlSelect scene as buoldindex 1 not lvl 1
+                SerializationManager.Save("playerProfile", profile);
+            }
+        }
+        else
+        {
+            profile.starNum[buildIndex - 2] = _starNum;// -1 coz there is lvlSelect scene as buoldindex 1 not lvl 1
+            SerializationManager.Save("playerProfile", profile);
         }
     }
     public void Replay()
     {
-        Scene scene = SceneManager.GetActiveScene();
-        SceneManager.LoadScene(scene.buildIndex);
+        SceneManager.LoadScene(buildIndex);
     }
     public void NextLvl()
     {
-        Scene scene = SceneManager.GetActiveScene();
-        SceneManager.LoadScene(scene.buildIndex + 1);
+        SceneManager.LoadScene(buildIndex + 1);
     }
     public void Home()
     {

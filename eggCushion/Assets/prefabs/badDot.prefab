@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2744154139073017511}
   - component: {fileID: 2744154139073017510}
   - component: {fileID: 849380958}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: badDot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -134,3 +134,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   blower: {fileID: 0}
+  gravityScale: 0.35
+  fireSpeed: 0
+  type: 0
