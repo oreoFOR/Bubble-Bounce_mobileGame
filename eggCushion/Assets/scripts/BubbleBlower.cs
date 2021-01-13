@@ -124,7 +124,6 @@ public class BubbleBlower : MonoBehaviour
         if(blower != null)
         {
             blower.GetComponent<Animator>().SetTrigger("fade");
-            print("have set trigger");
             StartCoroutine(DestroyBlower());
         }
     }

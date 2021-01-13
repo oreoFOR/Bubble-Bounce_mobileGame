@@ -39,7 +39,7 @@ public class GameManager : MonoBehaviour
     {
         PlayerPrefs.SetInt("StaticLevelNum", 0);
         //PlayerProfile p = new PlayerProfile();
-       //SerializationManager.Save("playerProfile", p);
+        //SerializationManager.Save("playerProfile", p);
     }
     void StartGame()
     {
@@ -101,20 +101,31 @@ public class GameManager : MonoBehaviour
     void SaveManage(int _starNum)
     {
         SaveData data = SerializationManager.Load("playerProfile");
-        if(data != null)
+        if (data != null)
         {
             profile.starNum = data.starNum;
-            if (_starNum > data.starNum[buildIndex -2])
+            if (buildIndex - 2 >= data.starNum.Count)
             {
-                profile.starNum[buildIndex - 2] = _starNum;// -1 coz there is lvlSelect scene as buoldindex 1 not lvl 1
-                SerializationManager.Save("playerProfile", profile);
+                print("greater than");
+                profile.starNum.Add(starNum);
+                SetProfile();
+            }
+            else if (_starNum > data.starNum[buildIndex -2])
+            {
+                SetProfile();
             }
         }
         else
         {
-            profile.starNum[buildIndex - 2] = _starNum;// -1 coz there is lvlSelect scene as buoldindex 1 not lvl 1
-            SerializationManager.Save("playerProfile", profile);
+            SetProfile();
         }
+    }
+    void SetProfile()
+    {
+        print(buildIndex - 2);
+        print(profile.starNum.Count);
+        profile.starNum[buildIndex - 2] = starNum;// -1 coz there is lvlSelect scene as buoldindex 1 not lvl 1
+        SerializationManager.Save("playerProfile", profile);
     }
     public void Replay()
     {

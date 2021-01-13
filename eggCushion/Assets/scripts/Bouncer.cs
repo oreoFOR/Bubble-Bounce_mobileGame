@@ -11,7 +11,8 @@ public class Bouncer : MonoBehaviour
     public enum BouncerType
     {
         faller,
-        firer
+        firer,
+        rotater
     }
     public BouncerType type;
     private void Start()
@@ -20,11 +21,13 @@ public class Bouncer : MonoBehaviour
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        print("collision");
-        if (collision.gameObject.CompareTag("Bubble"))
+        if(type != BouncerType.rotater)
         {
-            Destroy(collision.gameObject);
-            blower.SetBubbleNum(false);
+            if (collision.gameObject.CompareTag("Bubble"))
+            {
+                Destroy(collision.gameObject);
+                blower.SetBubbleNum(false);
+            }
         }
     }
     public void StartPhysics()
